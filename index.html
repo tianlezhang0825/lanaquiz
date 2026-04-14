@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Lana Del Rey Song Are You?</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cormorant Garamond', serif;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1516280440614-37939bbacd81?q=80&w=2070&auto=format&fit=crop'); /* 替换为你喜欢的公路/花朵背景 */
+            background-size: cover;
+            background-attachment: fixed;
+            color: #fefae0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <div id="quiz-container" class="max-w-2xl w-full glass-card p-8 rounded-lg shadow-2xl text-center">
+        <h1 class="text-4xl mb-6 italic">Which Lana Del Rey Song Are You?</h1>
+        
+        <div id="question-box">
+            <p id="question-text" class="text-2xl mb-8">If you were a place, where would you be?</p>
+            <div id="options" class="space-y-4">
+                </div>
+        </div>
+
+        <div id="result-box" class="hidden">
+            <h2 class="text-3xl mb-4">You are...</h2>
+            <p id="song-title" class="text-5xl font-bold italic text-red-300 mb-4"></p>
+            <p id="song-desc" class="text-xl italic leading-relaxed"></p>
+            <button onclick="location.reload()" class="mt-8 px-6 py-2 border border-white hover:bg-white hover:text-black transition">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        // 这里只是简单的逻辑示例
+        const questions = [
+            {
+                q: "你理想的下午是怎么度过的？",
+                options: [
+                    { text: "在好莱坞山的泳池边喝着可乐", score: "Born to Die" },
+                    { text: "在老式敞篷车里吹着海风", score: "West Coast" },
+                    { text: "在昏暗的小酒吧写诗", score: "Hope Is a Dangerous Thing..." },
+                    { text: "在教堂的草地上跳舞", score: "Young and Beautiful" }
+                ]
+            },
+            // ... 你可以增加到10-15个问题
+        ];
+
+        let currentQ = 0;
+        let scores = {};
+
+        function loadQuestion() {
+            const q = questions[currentQ];
+            document.getElementById('question-text').innerText = q.q;
+            const optionsDiv = document.getElementById('options');
+            optionsDiv.innerHTML = '';
+            
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full py-3 px-4 text-lg border border-white/30 rounded hover:bg-white/20 transition duration-300";
+                btn.innerText = opt.text;
+                btn.onclick = () => selectOption(opt.score);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function selectOption(song) {
+            scores[song] = (scores[song] || 0) + 1;
+            currentQ++;
+            if (currentQ < questions.length) {
+                loadQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('question-box').classList.add('hidden');
+            const resultBox = document.getElementById('result-box');
+            resultBox.classList.remove('hidden');
+            
+            // 简单取最高分的歌
+            const winner = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
+            document.getElementById('song-title').innerText = winner;
+            
+            const desc = {
+                "Born to Die": "你充满戏剧性，热爱极致的浪漫，即使它带有一丝忧郁。",
+                "West Coast": "你像夏日的午后，随性、迷幻，让人无法捉摸。",
+                "Young and Beautiful": "你追求永恒的爱，在繁华中保持着一颗纯粹而敏感的心。"
+            };
+            document.getElementById('song-desc').innerText = desc[winner] || "You're a classic Lana masterpiece.";
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
